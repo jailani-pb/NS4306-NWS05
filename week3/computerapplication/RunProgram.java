@@ -8,6 +8,9 @@ public class RunProgram {
 		portableDevice.bootUp();
 		portableDevice.chargeBattery(50);
 		System.out.println(portableDevice.getBatteryPercentage());
+		
+		Smartphone smartphone = new Smartphone("Android");
+		smartphone.bootUp();
 	}
 	
 }
