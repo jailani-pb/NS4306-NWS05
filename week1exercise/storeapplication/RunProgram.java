@@ -10,9 +10,10 @@ public class RunProgram {
 		invoice1.price = 1200.00;
 		
 		System.out.println("Invoice of Part:");
-		System.out.println("Number\t\tDescription\t\tQuantity\tPrice");
-		System.out.println("===============================================================");
-		System.out.printf("%s\t\t%s\t\t%d\t\t%.2f\n", invoice1.partNumber, invoice1.partDescription, invoice1.quantity, invoice1.price);
+		System.out.println("Number\t\tDescription\t\tQuantity\tPrice\t\tTotal");
+		System.out.println("====================================================================================");
+		System.out.printf("%s\t\t%s\t\t%d\t\t%.2f\t\t%.2f\n", invoice1.partNumber, invoice1.partDescription, 
+				invoice1.quantity, invoice1.price, invoice1.getInvoiceAmount());
 	}
 	
 }
