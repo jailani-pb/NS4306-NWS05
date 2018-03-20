@@ -1,4 +1,4 @@
-package week11.chatapplication;
+package week11.chatappimproved;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
