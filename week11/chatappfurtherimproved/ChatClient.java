@@ -31,9 +31,7 @@ public class ChatClient {
 			
 			scanner = new Scanner(System.in);
 			
-			readWelcomeMessage();
-			readMainMenu();
-			selectMainMenuOption();
+			mainLogic();
 
 			new Thread(new Runnable() {
 				@Override
@@ -81,6 +79,12 @@ public class ChatClient {
 			} catch (IOException e) {
 			}
 		}
+	}
+	
+	public static void mainLogic() throws IOException {
+		readWelcomeMessage();
+		readMainMenu();
+		selectMainMenuOption();
 	}
 	
 	public static void readWelcomeMessage() throws IOException {
@@ -135,11 +139,35 @@ public class ChatClient {
 			for(int i = 0; i < numberOfAvailableSession; i++) {
 				System.out.println(fromServer.readUTF());
 			}
-			sendServerSelectedSession();
+			System.out.println(fromServer.readUTF());
+			sendServerSelectedSession(numberOfAvailableSession);
+		} else {
+			System.out.println(fromServer.readUTF());
+			System.out.println(fromServer.readUTF());
+			String startNewSession = scanner.nextLine();
+			toServer.writeUTF(startNewSession);
+			toServer.flush();
+			if(startNewSession.equalsIgnoreCase("y")) {
+				System.out.println(fromServer.readUTF());
+				waitingForOtherClient();
+				return;
+			} else {
+				System.out.println(fromServer.readUTF());
+				String goMainMenu = scanner.nextLine();
+				toServer.writeUTF(goMainMenu);
+				toServer.flush();
+				if(goMainMenu.equalsIgnoreCase("y")) {
+					mainLogic();
+					return;
+				} else {
+					listDownAvailableSession();
+					return;
+				}
+			}
 		}
 	}
 
-	private static void sendServerSelectedSession() throws IOException {
+	private static void sendServerSelectedSession(int numberOfAvailableSession) throws IOException {
 		int sessionSelected = 0;
 		try {
 			sessionSelected = Integer.parseInt(scanner.nextLine());
@@ -147,7 +175,11 @@ public class ChatClient {
 			toServer.flush();
 			boolean validSelectedSession = fromServer.readBoolean();
 			System.out.println(fromServer.readUTF());
-			if(!validSelectedSession) {
+			if(validSelectedSession) {
+				if(sessionSelected == numberOfAvailableSession) {
+					mainLogic();
+				}
+			} else {
 				listDownAvailableSession();
 			}
 		} catch (NumberFormatException e) {

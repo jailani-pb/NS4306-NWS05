@@ -27,19 +27,24 @@ public class SessionInitial implements Runnable {
 			toClient = new DataOutputStream(
 					new BufferedOutputStream(client.getOutputStream()));
 			
-			sendWelcomeMessage();
-			sendMainMenu();
-			String option = waitForOptionFromClient();
+			mainLogic();
 			
-			if(option.equals("1")) {
-				startANewSession();
-			}
-			if(option.equals("2")) {
-				listDownAvailableSession();
-			}
 		} catch (IOException e) {
 			System.out.println("Communication problem with " + client.getInetAddress().getHostAddress() + " " 
 					+ client.getInetAddress().getHostName() + " .");
+		}
+	}
+	
+	public void mainLogic() throws IOException {
+		sendWelcomeMessage();
+		sendMainMenu();
+		String option = waitForOptionFromClient();
+		
+		if(option.equals("1")) {
+			startANewSession();
+		}
+		if(option.equals("2")) {
+			listDownAvailableSession();
 		}
 	}
 	
@@ -99,6 +104,7 @@ public class SessionInitial implements Runnable {
 				toClient.writeUTF("(" + printOptionNumber + ") " + session.getSessionName());
 				printOptionNumber++;
 			}
+			toClient.writeUTF("(" + printOptionNumber + ") Back to Main Menu");
 			toClient.flush();
 			waitClientChooseSession();
 		} else {
@@ -112,8 +118,20 @@ public class SessionInitial implements Runnable {
 						startANewSession();
 						return;
 					} else {
-						listDownAvailableSession();
-						return;
+						toClient.writeUTF("Go to main menu? (y/n)");
+						toClient.flush();
+						while(true) {
+							if(fromClient.available() > 0) {
+								decision = fromClient.readUTF();
+								if(decision.equalsIgnoreCase("y")) {
+									mainLogic();
+									return;
+								} else {
+									listDownAvailableSession();
+									return;
+								}
+							}
+						}
 					}
 				}
 			}
@@ -132,10 +150,17 @@ public class SessionInitial implements Runnable {
 					toClient.writeUTF("Connected to: " + session.getSessionName());
 					session.connectClient2(client);
 				} else {
-					validSelectedSession = false;
-					toClient.writeBoolean(validSelectedSession);
-					toClient.writeUTF("Selected session does not exists.");
-					listDownAvailableSession();
+					if(decision == ChatServer.availableSessions.size()) {
+						validSelectedSession = true;
+						toClient.writeBoolean(validSelectedSession);
+						toClient.writeUTF("Going back to main menu.");
+						mainLogic();
+					} else {
+						validSelectedSession = false;
+						toClient.writeBoolean(validSelectedSession);
+						toClient.writeUTF("Selected session does not exists.");
+						listDownAvailableSession();
+					}
 				}
 				toClient.flush();
 				return;
