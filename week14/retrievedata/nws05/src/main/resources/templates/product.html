@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Product Details</title>
+</head>
+<body>
+	<form method="get" th:action="|/edit/product/${product.id}|">
+		<h1>Product Details</h1>
+		
+		<h3>Name:</h3>
+		<input type="text" name="name" 
+			th:value="${product.name}" /><br/>
+		
+		<h3>Description:</h3>
+		<textarea name="description"
+			th:text="${product.description}"></textarea><br/>
+		
+		<h3>Price:</h3>
+		<input type="text" name="price" 
+			th:value="${product.price}"/><br/>
+		
+		<h3>In Stock?</h3>
+		<input type="radio" name="instock" value="true" 
+			th:checked="${product.inStock == true}"/>
+			 Yes <br/>
+		<input type="radio" name="instock" value="false"
+			th:checked="${product.inStock == false}"/>
+			 No <br/>
+		<button type="submit">Edit</button>
+	</form>
+</body>
+</html>

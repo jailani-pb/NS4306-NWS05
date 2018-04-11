@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Add new product</title>
+</head>
+<body>
+	<form method="get" action="/add/product">
+		<h1>Add new product</h1>
+		<h3>Name:</h3>
+		<input type="text" name="name" /><br/>
+		<h3>Description:</h3>
+		<textarea name="description"></textarea><br/>
+		<h3>Price:</h3>
+		<input type="text" name="price" /><br/>
+		<h3>In Stock?</h3>
+		<input type="radio" name="instock" value="true" checked/>
+		 Yes <br/>
+		<input type="radio" name="instock" value="false" /> No <br/>
+		<button type="submit">Add</button>
+	</form>
+</body>
+</html>
